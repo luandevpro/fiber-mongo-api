@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func CreateUser(c *fiber.Ctx) error {
@@ -38,13 +38,31 @@ func CreateUser(c *fiber.Ctx) error {
 func GetAllUser(c *fiber.Ctx) error {
 	collection := databases.Db.Collection("user")
 
-	cursor, err := collection.Find(c.Context(), bson.D{{}}, options.Find().SetLimit(2))
+	// cursor, err := collection.Find(c.Context(), bson.D{{}}, options.Find().SetLimit(2))
+
+	// if err != nil {
+	// 	return c.Status(500).SendString(err.Error())
+	// }
+
+	var users []bson.M
+
+	// iterate the cursor and decode each item into an Employee
+	// if err := cursor.All(c.Context(), &users); err != nil {
+	// 	return c.Status(500).SendString(err.Error())
+	// }
+
+	lookupStage := bson.D{
+		{
+			Key:   "$lookup",
+			Value: bson.D{{Key: "from", Value: "post"}, {Key: "localField", Value: "_id"}, {Key: "foreignField", Value: "user"}, {Key: "as", Value: "posts"}},
+		},
+	}
+
+	cursor, err := collection.Aggregate(c.Context(), mongo.Pipeline{lookupStage})
 
 	if err != nil {
 		return c.Status(500).SendString(err.Error())
 	}
-
-	var users []models.User = make([]models.User, 0)
 
 	// iterate the cursor and decode each item into an Employee
 	if err := cursor.All(c.Context(), &users); err != nil {

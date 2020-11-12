@@ -72,8 +72,8 @@ func GetPost(c *fiber.Ctx) error {
 	// err = collection.FindOne(c.Context(), filter).Decode(&resultOne)
 
 	matchStage := bson.D{{
-			Key:   "$match",
-			Value: bson.D{{Key: "_id", Value: postId}},
+		Key:   "$match",
+		Value: bson.D{{Key: "_id", Value: postId}},
 	}}
 
 	lookupStage := bson.D{
@@ -88,7 +88,7 @@ func GetPost(c *fiber.Ctx) error {
 		Value: bson.D{{Key: "path", Value: "$user"}, {Key: "preserveNullAndEmptyArrays", Value: true}},
 	}}
 
-	cursor, err := collection.Aggregate(c.Context(), mongo.Pipeline{matchStage ,lookupStage, unwindStage})
+	cursor, err := collection.Aggregate(c.Context(), mongo.Pipeline{matchStage, lookupStage, unwindStage})
 
 	var posts []bson.M
 

@@ -5,5 +5,7 @@ import (
 )
 
 func GetHome(c *fiber.Ctx) error {
-	return c.SendString("hello world")
+	return c.Render("index", fiber.Map{
+		"Title": "Hello, World!",
+	})
 }
