@@ -138,9 +138,9 @@ func DeleteUser(c *fiber.Ctx) error {
 	filter := bson.D{{Key: "_id", Value: userId}}
 
 	collection := databases.Db.Collection("user")
-	
+
 	result, err := collection.DeleteOne(c.Context(), &filter)
-	
+
 	if err != nil {
 		return c.SendStatus(500)
 	}
