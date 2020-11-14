@@ -3,8 +3,10 @@ package handlers
 import (
 	"fibermongo/databases"
 	"fibermongo/models"
+	"fibermongo/utils"
 
 	"github.com/gofiber/fiber/v2"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -13,9 +15,15 @@ import (
 func CreateUser(c *fiber.Ctx) error {
 	p := new(models.User)
 
+	argon2ID := utils.NewArgon2ID()
+
 	if err := c.BodyParser(p); err != nil {
 		return err
 	}
+
+	hash, _ := argon2ID.Hash(p.Password)
+
+	p.Password = hash
 
 	collection := databases.Db.Collection("user")
 
@@ -171,4 +179,8 @@ func DeleteUser(c *fiber.Ctx) error {
 	// the record was deleted
 	return c.SendStatus(204)
 
+}
+
+func Profile(c *fiber.Ctx) error {
+	return c.SendString("Welcome ")
 }

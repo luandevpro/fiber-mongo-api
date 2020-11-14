@@ -1,8 +1,9 @@
 package models
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type User struct {
@@ -10,7 +11,7 @@ type User struct {
 	Email     string             `json:"email"`
 	Name      string             `json:"name"`
 	Age       int                `json:"age,omitempty"`
-	Password  string             `json:"password"`
+	Password  string             `json:"password" bson:"password,omitempty"`
 	Status    bool               `json:"status"`
 	CreatedAt time.Time          `json:"createdAt"`
 }
