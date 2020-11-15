@@ -25,4 +25,9 @@ func Setup(app *fiber.App) {
 	app.Post("/post", handlers.CreatePost)
 	app.Put("/post/:id", handlers.UpdatePost)
 	app.Delete("/post/:id", handlers.DeletePost)
+	// api upload
+	app.Post("/upload", handlers.Upload)
+	app.Delete("/upload/:id", handlers.DeleteMedia)
+	// api view images
+	app.Get("/upload/:id", handlers.ViewMedia)
 }
