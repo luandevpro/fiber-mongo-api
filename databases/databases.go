@@ -1,34 +1,28 @@
 package databases
 
 import (
-	"context"
+	"fibermongo/models"
 	"fmt"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-var Db *mongo.Database
+var (
+	Db *gorm.DB
+)
 
 func InitDatabase() {
-	// Set client options
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	var err error
 
-	// Connect to MongoDB
-	client, err := mongo.Connect(context.TODO(), clientOptions)
+	Db, err = gorm.Open("mysql", "root:01052020@tcp(127.0.0.1:3306)/gorm?parseTime=true")
 
+	log.Println(err)
 	if err != nil {
-		log.Fatal(err)
+		panic("failed to connect database")
 	}
-
-	// Check the connection
-	err = client.Ping(context.TODO(), nil)
-
-	Db = client.Database("fibermongo")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Connected to MongoDB!")
+	fmt.Println("Connection Opened to Database")
+	Db.AutoMigrate(&models.User{}, &models.Post{})
+	fmt.Println("Database Migrated")
 }
